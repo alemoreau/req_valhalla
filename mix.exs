@@ -11,7 +11,8 @@ defmodule ValhallaReqClient.MixProject do
       description: "An Elixir client for Valhalla routing API using Req",
       package: package(),
       name: "ValhallaReqClient",
-      source_url: "https://github.com/alemoreau/valhalla-req-client"
+      source_url: "https://github.com/alemoreau/valhalla-req-client",
+      test_coverage: [threshold: 70]
     ]
   end
 
