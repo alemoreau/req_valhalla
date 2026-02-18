@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+env:
+  MIX_ENV: test
+
+jobs:
+  test:
+    name: Test (Elixir ${{matrix.elixir}} / OTP ${{matrix.otp}})
+    runs-on: ubuntu-latest
+    environment: test
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Latest stable versions (Elixir 1.18 and 1.19)
+          - elixir: '1.19.x'
+            otp: '27.x'
+          - elixir: '1.18.x'
+            otp: '27.x'
+          - elixir: '1.18.x'
+            otp: '26.x'
+          - elixir: '1.17.x'
+            otp: '27.x'
+          - elixir: '1.17.x'
+            otp: '26.x'
+          - elixir: '1.16.x'
+            otp: '26.x'
+          - elixir: '1.15.x'
+            otp: '26.x'
+          - elixir: '1.15.x'
+            otp: '25.x'
+          # Minimum supported version from mix.exs
+          - elixir: '1.14.x'
+            otp: '25.x'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: ${{ matrix.elixir }}
+          otp-version: ${{ matrix.otp }}
+
+      - name: Restore dependencies cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            deps
+            _build
+          key: ${{ runner.os }}-mix-${{ matrix.elixir }}-${{ matrix.otp }}-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-mix-${{ matrix.elixir }}-${{ matrix.otp }}-
+
+      - name: Install dependencies
+        run: mix deps.get
+
+      - name: Compile code
+        run: mix compile --warnings-as-errors
+
+      - name: Check formatting
+        run: mix format --check-formatted
+        if: matrix.elixir == '1.19.x' && matrix.otp == '27.x'
+
+      - name: Run tests
+        run: mix test
+        env:
+          VALHALLA_TEST_URL: ${{ vars.VALHALLA_TEST_URL }}
