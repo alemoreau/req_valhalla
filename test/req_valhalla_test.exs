@@ -1,10 +1,25 @@
 defmodule ReqValhallaTest do
   use ExUnit.Case
 
-  @moduletag :integration
-
-  # Test configuration - requires VALHALLA_TEST_URL environment variable
+  # Test configuration - requires VALHALLA_TEST_URL environment variable for integration tests
   @test_base_url System.get_env("VALHALLA_TEST_URL")
+
+  # Unit tests (don't require Valhalla server)
+  describe "configuration" do
+    test "returns default base URL when not configured" do
+      Application.delete_env(:req_valhalla, :base_url)
+      assert ReqValhalla.base_url() == "http://localhost:8002"
+    end
+
+    test "returns configured base URL" do
+      Application.put_env(:req_valhalla, :base_url, "http://example.com")
+      assert ReqValhalla.base_url() == "http://example.com"
+      Application.delete_env(:req_valhalla, :base_url)
+    end
+  end
+
+  # Integration tests (require Valhalla server via VALHALLA_TEST_URL)
+  @moduletag :integration
 
   setup do
     if @test_base_url do
@@ -12,16 +27,14 @@ defmodule ReqValhallaTest do
       Application.put_env(:req_valhalla, :base_url, @test_base_url)
       :ok
     else
-      # Skip tests if no test URL is configured
+      # Skip integration tests if no test URL is configured
       :skip
     end
   end
 
   describe "base_url/0" do
-    test "returns configured base URL" do
-      if @test_base_url do
-        assert ReqValhalla.base_url() == @test_base_url
-      end
+    test "returns configured test URL" do
+      assert ReqValhalla.base_url() == @test_base_url
     end
   end
 

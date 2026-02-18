@@ -20,7 +20,7 @@ erl_crash.dump
 *.ez
 
 # Ignore package tarball (built via "mix hex.build").
-valhalla_req_client-*.tar
+req_valhalla-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
