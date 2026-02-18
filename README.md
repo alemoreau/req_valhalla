@@ -142,27 +142,21 @@ The following costing models (transportation modes) are supported:
 
 ## Testing
 
-Run the test suite:
-
-```bash
-mix test
-```
-
-The tests will attempt to connect to a Valhalla instance. By default, they use the test server at `http://routing-valhalla-borcmc-1f2411-145-223-34-60.traefik.me/`.
-
-You can override the test URL using the `VALHALLA_TEST_URL` environment variable:
+The tests require a Valhalla instance to run against. Set the `VALHALLA_TEST_URL` environment variable to point to your Valhalla server:
 
 ```bash
 VALHALLA_TEST_URL=http://your-valhalla-server.com mix test
 ```
 
+If `VALHALLA_TEST_URL` is not set, the tests will be skipped.
+
 ### Continuous Integration
 
 This project uses GitHub Actions to run tests across multiple Elixir and OTP versions:
-- Elixir 1.14.x - 1.16.x
-- OTP 25.x - 26.x
+- Elixir 1.14.x - 1.19.x
+- OTP 25.x - 27.x
 
-The test URL can be configured in the repository settings as a repository variable named `VALHALLA_TEST_URL`.
+The test URL must be configured in the repository settings as a repository variable named `VALHALLA_TEST_URL`.
 
 ## Documentation
 

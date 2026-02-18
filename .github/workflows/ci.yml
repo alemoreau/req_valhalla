@@ -8,7 +8,7 @@ on:
 
 env:
   MIX_ENV: test
-  VALHALLA_TEST_URL: ${{ vars.VALHALLA_TEST_URL || 'http://routing-valhalla-borcmc-1f2411-145-223-34-60.traefik.me' }}
+  VALHALLA_TEST_URL: ${{ vars.VALHALLA_TEST_URL }}
 
 jobs:
   test:

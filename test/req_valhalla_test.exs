@@ -3,19 +3,25 @@ defmodule ReqValhallaTest do
 
   @moduletag :integration
 
-  # Test configuration - can be overridden via VALHALLA_TEST_URL environment variable
-  @default_test_url "http://routing-valhalla-borcmc-1f2411-145-223-34-60.traefik.me"
-  @test_base_url System.get_env("VALHALLA_TEST_URL", @default_test_url)
+  # Test configuration - requires VALHALLA_TEST_URL environment variable
+  @test_base_url System.get_env("VALHALLA_TEST_URL")
 
   setup do
-    # Configure the test base URL
-    Application.put_env(:req_valhalla, :base_url, @test_base_url)
-    :ok
+    if @test_base_url do
+      # Configure the test base URL
+      Application.put_env(:req_valhalla, :base_url, @test_base_url)
+      :ok
+    else
+      # Skip tests if no test URL is configured
+      :skip
+    end
   end
 
   describe "base_url/0" do
     test "returns configured base URL" do
-      assert ReqValhalla.base_url() == @test_base_url
+      if @test_base_url do
+        assert ReqValhalla.base_url() == @test_base_url
+      end
     end
   end
 
