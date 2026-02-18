@@ -150,6 +150,20 @@ mix test
 
 The tests will attempt to connect to a Valhalla instance. By default, they use the test server at `http://routing-valhalla-borcmc-1f2411-145-223-34-60.traefik.me/`.
 
+You can override the test URL using the `VALHALLA_TEST_URL` environment variable:
+
+```bash
+VALHALLA_TEST_URL=http://your-valhalla-server.com mix test
+```
+
+### Continuous Integration
+
+This project uses GitHub Actions to run tests across multiple Elixir and OTP versions:
+- Elixir 1.14.x - 1.16.x
+- OTP 25.x - 26.x
+
+The test URL can be configured in the repository settings as a repository variable named `VALHALLA_TEST_URL`.
+
 ## Documentation
 
 For more information about the Valhalla API, see the [official documentation](https://valhalla.github.io/valhalla/api/).
