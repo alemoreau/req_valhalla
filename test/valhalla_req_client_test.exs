@@ -164,6 +164,7 @@ defmodule ValhallaReqClientTest do
       case ValhallaReqClient.matrix(sources, targets, costing: "auto") do
         {:ok, response} ->
           assert is_map(response)
+
           assert Map.has_key?(response, "sources_to_targets") or
                    Map.has_key?(response, "one_to_many") or
                    Map.has_key?(response, "many_to_one")
