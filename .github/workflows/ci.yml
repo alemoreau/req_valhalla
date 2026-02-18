@@ -8,12 +8,12 @@ on:
 
 env:
   MIX_ENV: test
-  VALHALLA_TEST_URL: ${{ vars.VALHALLA_TEST_URL }}
 
 jobs:
   test:
     name: Test (Elixir ${{matrix.elixir}} / OTP ${{matrix.otp}})
     runs-on: ubuntu-latest
+    environment: test
     
     strategy:
       fail-fast: false
@@ -73,10 +73,10 @@ jobs:
       - name: Run tests
         run: mix test
         env:
-          VALHALLA_TEST_URL: ${{ env.VALHALLA_TEST_URL }}
+          VALHALLA_TEST_URL: ${{ vars.VALHALLA_TEST_URL }}
 
       - name: Run tests with coverage
         run: mix test --cover
         if: matrix.elixir == '1.19.x' && matrix.otp == '27.x'
         env:
-          VALHALLA_TEST_URL: ${{ env.VALHALLA_TEST_URL }}
+          VALHALLA_TEST_URL: ${{ vars.VALHALLA_TEST_URL }}
