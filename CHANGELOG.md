@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Changed
+- Updated `req` dependency from ~> 0.4.0 to ~> 0.5.0
+
 ## [0.1.0] - 2024-02-18
 
 ### Added
