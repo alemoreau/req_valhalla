@@ -21,7 +21,7 @@ Add `req_valhalla` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:req_valhalla, "~> 0.1.0"}
+    {:req_valhalla, "~> 0.2.0"}
   ]
 end
 ```
