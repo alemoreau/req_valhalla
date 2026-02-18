@@ -17,7 +17,7 @@ defmodule ReqValhalla.MixProject do
       source_url: @source_url,
       homepage_url: @source_url,
       docs: docs(),
-      test_coverage: [threshold: 70]
+      test_coverage: [threshold: 75]
     ]
   end
 
