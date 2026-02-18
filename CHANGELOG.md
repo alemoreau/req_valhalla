@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [0.1.0] - 2024-02-18
 
 ### Added
-- Initial release of ValhallaReqClient
+- Initial release of ReqValhalla (formerly valhalla_req_client)
 - Support for all major Valhalla API endpoints:
   - Routing with multiple costing models (auto, bicycle, pedestrian, truck, etc.)
   - Location lookup (finding nearest roads)
@@ -20,3 +20,5 @@ All notable changes to this project will be documented in this file.
 - Complete documentation with usage examples
 - Example scripts demonstrating all features
 - MIT License
+- GitHub Actions CI with Elixir 1.14-1.19 and OTP 25-27 support
+- Configurable test URL via environment variable

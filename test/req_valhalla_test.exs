@@ -1,4 +1,4 @@
-defmodule ValhallaReqClientTest do
+defmodule ReqValhallaTest do
   use ExUnit.Case
 
   @moduletag :integration
@@ -9,19 +9,19 @@ defmodule ValhallaReqClientTest do
 
   setup do
     # Configure the test base URL
-    Application.put_env(:valhalla_req_client, :base_url, @test_base_url)
+    Application.put_env(:req_valhalla, :base_url, @test_base_url)
     :ok
   end
 
   describe "base_url/0" do
     test "returns configured base URL" do
-      assert ValhallaReqClient.base_url() == @test_base_url
+      assert ReqValhalla.base_url() == @test_base_url
     end
   end
 
   describe "status/0" do
     test "returns service status" do
-      case ValhallaReqClient.status() do
+      case ReqValhalla.status() do
         {:ok, response} ->
           assert is_map(response)
           # Status endpoint should return version info
@@ -41,7 +41,7 @@ defmodule ValhallaReqClientTest do
         %{lat: 48.8698, lon: 2.3467}
       ]
 
-      case ValhallaReqClient.route(locations, costing: "auto") do
+      case ReqValhalla.route(locations, costing: "auto") do
         {:ok, response} ->
           assert is_map(response)
           assert Map.has_key?(response, "trip")
@@ -63,7 +63,7 @@ defmodule ValhallaReqClientTest do
       ]
 
       for costing <- ["auto", "bicycle", "pedestrian"] do
-        case ValhallaReqClient.route(locations, costing: costing) do
+        case ReqValhalla.route(locations, costing: costing) do
           {:ok, response} ->
             assert is_map(response)
 
@@ -80,7 +80,7 @@ defmodule ValhallaReqClientTest do
         %{lat: 48.8698, lon: 2.3467}
       ]
 
-      case ValhallaReqClient.route(locations, costing: "auto", units: "miles") do
+      case ReqValhalla.route(locations, costing: "auto", units: "miles") do
         {:ok, response} ->
           assert is_map(response)
 
@@ -94,7 +94,7 @@ defmodule ValhallaReqClientTest do
     test "finds nearest roads for a single location" do
       location = %{lat: 48.8566, lon: 2.3522}
 
-      case ValhallaReqClient.locate(location) do
+      case ReqValhalla.locate(location) do
         {:ok, response} ->
           assert is_list(response) or is_map(response)
 
@@ -109,7 +109,7 @@ defmodule ValhallaReqClientTest do
         %{lat: 48.8698, lon: 2.3467}
       ]
 
-      case ValhallaReqClient.locate(locations) do
+      case ReqValhalla.locate(locations) do
         {:ok, response} ->
           assert is_list(response) or is_map(response)
 
@@ -123,7 +123,7 @@ defmodule ValhallaReqClientTest do
     test "generates an isochrone polygon" do
       location = %{lat: 48.8566, lon: 2.3522}
 
-      case ValhallaReqClient.isochrone(location,
+      case ReqValhalla.isochrone(location,
              contours: [%{time: 10}, %{time: 20}],
              costing: "pedestrian"
            ) do
@@ -140,7 +140,7 @@ defmodule ValhallaReqClientTest do
     test "accepts multiple contour levels" do
       location = %{lat: 48.8566, lon: 2.3522}
 
-      case ValhallaReqClient.isochrone(location,
+      case ReqValhalla.isochrone(location,
              contours: [%{time: 5}, %{time: 10}, %{time: 15}],
              costing: "auto"
            ) do
@@ -162,7 +162,7 @@ defmodule ValhallaReqClientTest do
         %{lat: 48.8606, lon: 2.3376}
       ]
 
-      case ValhallaReqClient.matrix(sources, targets, costing: "auto") do
+      case ReqValhalla.matrix(sources, targets, costing: "auto") do
         {:ok, response} ->
           assert is_map(response)
 
@@ -184,7 +184,7 @@ defmodule ValhallaReqClientTest do
         %{lat: 48.8606, lon: 2.3376}
       ]
 
-      case ValhallaReqClient.optimized_route(locations, costing: "auto") do
+      case ReqValhalla.optimized_route(locations, costing: "auto") do
         {:ok, response} ->
           assert is_map(response)
           assert Map.has_key?(response, "trip")
@@ -203,7 +203,7 @@ defmodule ValhallaReqClientTest do
         %{lat: 48.8580, lon: 2.3530}
       ]
 
-      case ValhallaReqClient.trace_route(shape, costing: "auto") do
+      case ReqValhalla.trace_route(shape, costing: "auto") do
         {:ok, response} ->
           assert is_map(response)
 
@@ -220,7 +220,7 @@ defmodule ValhallaReqClientTest do
         %{lat: 48.8698, lon: 2.3467}
       ]
 
-      case ValhallaReqClient.trace_attributes(shape, costing: "auto") do
+      case ReqValhalla.trace_attributes(shape, costing: "auto") do
         {:ok, response} ->
           assert is_map(response)
 
@@ -237,7 +237,7 @@ defmodule ValhallaReqClientTest do
         %{lat: 48.8698, lon: 2.3467}
       ]
 
-      case ValhallaReqClient.height(shape) do
+      case ReqValhalla.height(shape) do
         {:ok, response} ->
           assert is_map(response)
           assert Map.has_key?(response, "height") or Map.has_key?(response, "range_height")
@@ -256,7 +256,7 @@ defmodule ValhallaReqClientTest do
         %{lat: -200, lon: -200}
       ]
 
-      case ValhallaReqClient.route(locations, costing: "auto") do
+      case ReqValhalla.route(locations, costing: "auto") do
         {:ok, _response} ->
           # Some implementations might handle this
           :ok
@@ -268,7 +268,7 @@ defmodule ValhallaReqClientTest do
     end
 
     test "handles empty location list" do
-      case ValhallaReqClient.route([], costing: "auto") do
+      case ReqValhalla.route([], costing: "auto") do
         {:ok, _response} ->
           :ok
 

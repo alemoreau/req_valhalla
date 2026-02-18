@@ -1,7 +1,7 @@
-# Example usage of ValhallaReqClient
+# Example usage of ReqValhalla
 
 # Configure your Valhalla server URL
-Application.put_env(:valhalla_req_client, :base_url, "http://your-valhalla-server.com")
+Application.put_env(:req_valhalla, :base_url, "http://your-valhalla-server.com")
 
 # Example 1: Simple routing between two points
 IO.puts("Example 1: Simple Routing")
@@ -12,7 +12,7 @@ locations = [
   %{lat: 48.8606, lon: 2.3376}   # Arc de Triomphe, Paris
 ]
 
-case ValhallaReqClient.route(locations, costing: "auto") do
+case ReqValhalla.route(locations, costing: "auto") do
   {:ok, response} ->
     trip = response["trip"]
     summary = trip["summary"]
@@ -31,7 +31,7 @@ IO.puts("--------------------------------")
 
 location = %{lat: 48.8566, lon: 2.3522}
 
-case ValhallaReqClient.isochrone(
+case ReqValhalla.isochrone(
   location,
   contours: [%{time: 5}, %{time: 10}, %{time: 15}],
   costing: "pedestrian"
@@ -58,7 +58,7 @@ targets = [
   %{lat: 48.8529, lon: 2.3499}
 ]
 
-case ValhallaReqClient.matrix(sources, targets, costing: "bicycle") do
+case ReqValhalla.matrix(sources, targets, costing: "bicycle") do
   {:ok, response} ->
     IO.puts("Matrix computed successfully!")
     IO.inspect(response, label: "Matrix response")
@@ -78,7 +78,7 @@ locations = [
   %{lat: 48.8529, lon: 2.3499}   # Point 3
 ]
 
-case ValhallaReqClient.optimized_route(locations, costing: "auto") do
+case ReqValhalla.optimized_route(locations, costing: "auto") do
   {:ok, response} ->
     trip = response["trip"]
     summary = trip["summary"]
@@ -101,7 +101,7 @@ gps_trace = [
   %{lat: 48.8580, lon: 2.3530}
 ]
 
-case ValhallaReqClient.trace_route(gps_trace, costing: "auto") do
+case ReqValhalla.trace_route(gps_trace, costing: "auto") do
   {:ok, response} ->
     IO.puts("GPS trace matched successfully!")
     trip = response["trip"]
@@ -115,7 +115,7 @@ end
 IO.puts("\nExample 6: Service Status")
 IO.puts("-------------------------")
 
-case ValhallaReqClient.status() do
+case ReqValhalla.status() do
   {:ok, status} ->
     IO.puts("Service is available!")
     if version = status["version"] do

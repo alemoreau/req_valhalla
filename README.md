@@ -1,4 +1,4 @@
-# Valhalla Req Client
+# ReqValhalla
 
 An Elixir client for the [Valhalla](https://github.com/valhalla/valhalla) routing API using [Req](https://github.com/wojtekmach/req).
 
@@ -16,12 +16,12 @@ An Elixir client for the [Valhalla](https://github.com/valhalla/valhalla) routin
 
 ## Installation
 
-Add `valhalla_req_client` to your list of dependencies in `mix.exs`:
+Add `req_valhalla` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:valhalla_req_client, "~> 0.1.0"}
+    {:req_valhalla, "~> 0.1.0"}
   ]
 end
 ```
@@ -31,7 +31,7 @@ end
 Configure the base URL for your Valhalla instance in `config/config.exs`:
 
 ```elixir
-config :valhalla_req_client,
+config :req_valhalla,
   base_url: "http://your-valhalla-instance.com"
 ```
 
@@ -48,7 +48,7 @@ locations = [
   %{lat: 48.8698, lon: 2.3467}   # Destination
 ]
 
-{:ok, response} = ValhallaReqClient.route(locations, costing: "auto")
+{:ok, response} = ReqValhalla.route(locations, costing: "auto")
 ```
 
 ### Isochrones
@@ -58,7 +58,7 @@ Generate isochrone polygons (areas reachable within a time limit):
 ```elixir
 location = %{lat: 48.8566, lon: 2.3522}
 
-{:ok, response} = ValhallaReqClient.isochrone(
+{:ok, response} = ReqValhalla.isochrone(
   location,
   contours: [%{time: 10}, %{time: 20}, %{time: 30}],
   costing: "pedestrian"
@@ -76,7 +76,7 @@ targets = [
   %{lat: 48.8606, lon: 2.3376}
 ]
 
-{:ok, response} = ValhallaReqClient.matrix(sources, targets, costing: "auto")
+{:ok, response} = ReqValhalla.matrix(sources, targets, costing: "auto")
 ```
 
 ### Optimized Route
@@ -90,7 +90,7 @@ locations = [
   %{lat: 48.8606, lon: 2.3376}
 ]
 
-{:ok, response} = ValhallaReqClient.optimized_route(locations, costing: "auto")
+{:ok, response} = ReqValhalla.optimized_route(locations, costing: "auto")
 ```
 
 ### GPS Trace Matching
@@ -104,7 +104,7 @@ shape = [
   %{lat: 48.8580, lon: 2.3530}
 ]
 
-{:ok, response} = ValhallaReqClient.trace_route(shape, costing: "auto")
+{:ok, response} = ReqValhalla.trace_route(shape, costing: "auto")
 ```
 
 ### Elevation Data
@@ -117,7 +117,7 @@ shape = [
   %{lat: 48.8698, lon: 2.3467}
 ]
 
-{:ok, response} = ValhallaReqClient.height(shape)
+{:ok, response} = ReqValhalla.height(shape)
 ```
 
 ### Service Status
@@ -125,7 +125,7 @@ shape = [
 Check if the Valhalla service is available:
 
 ```elixir
-{:ok, status} = ValhallaReqClient.status()
+{:ok, status} = ReqValhalla.status()
 ```
 
 ## Costing Models

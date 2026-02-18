@@ -1,4 +1,4 @@
-defmodule ValhallaReqClient do
+defmodule ReqValhalla do
   @moduledoc """
   An Elixir client for the Valhalla routing API using Req.
 
@@ -9,18 +9,18 @@ defmodule ValhallaReqClient do
 
   You can configure the base URL for the Valhalla service:
 
-      config :valhalla_req_client,
+      config :req_valhalla,
         base_url: "http://your-valhalla-instance.com"
 
   ## Examples
 
       # Create a route between two points
       locations = [%{lat: 48.8566, lon: 2.3522}, %{lat: 48.8698, lon: 2.3467}]
-      {:ok, response} = ValhallaReqClient.route(locations, costing: "auto")
+      {:ok, response} = ReqValhalla.route(locations, costing: "auto")
 
       # Get an isochrone
       location = %{lat: 48.8566, lon: 2.3522}
-      {:ok, response} = ValhallaReqClient.isochrone(
+      {:ok, response} = ReqValhalla.isochrone(
         location,
         contours: [%{time: 10}, %{time: 20}],
         costing: "pedestrian"
@@ -33,7 +33,7 @@ defmodule ValhallaReqClient do
   Gets the configured base URL for the Valhalla service.
   """
   def base_url do
-    Application.get_env(:valhalla_req_client, :base_url, @default_base_url)
+    Application.get_env(:req_valhalla, :base_url, @default_base_url)
   end
 
   @doc """
@@ -80,7 +80,7 @@ defmodule ValhallaReqClient do
   ## Examples
 
       iex> locations = [%{lat: 48.8566, lon: 2.3522}, %{lat: 48.8698, lon: 2.3467}]
-      iex> {:ok, response} = ValhallaReqClient.route(locations, costing: "auto")
+      iex> {:ok, response} = ReqValhalla.route(locations, costing: "auto")
       iex> is_map(response)
       true
   """
@@ -113,7 +113,7 @@ defmodule ValhallaReqClient do
   ## Examples
 
       iex> location = %{lat: 48.8566, lon: 2.3522}
-      iex> {:ok, response} = ValhallaReqClient.locate(location)
+      iex> {:ok, response} = ReqValhalla.locate(location)
       iex> is_list(response) or is_map(response)
       true
   """
@@ -144,7 +144,7 @@ defmodule ValhallaReqClient do
   ## Examples
 
       iex> location = %{lat: 48.8566, lon: 2.3522}
-      iex> {:ok, response} = ValhallaReqClient.isochrone(
+      iex> {:ok, response} = ReqValhalla.isochrone(
       ...>   location,
       ...>   contours: [%{time: 10}, %{time: 20}, %{time: 30}],
       ...>   costing: "pedestrian"
@@ -182,7 +182,7 @@ defmodule ValhallaReqClient do
 
       iex> sources = [%{lat: 48.8566, lon: 2.3522}]
       iex> targets = [%{lat: 48.8698, lon: 2.3467}, %{lat: 48.8606, lon: 2.3376}]
-      iex> {:ok, response} = ValhallaReqClient.matrix(sources, targets, costing: "auto")
+      iex> {:ok, response} = ReqValhalla.matrix(sources, targets, costing: "auto")
       iex> is_map(response)
       true
   """
@@ -216,7 +216,7 @@ defmodule ValhallaReqClient do
       ...>   %{lat: 48.8698, lon: 2.3467},
       ...>   %{lat: 48.8606, lon: 2.3376}
       ...> ]
-      iex> {:ok, response} = ValhallaReqClient.optimized_route(locations, costing: "auto")
+      iex> {:ok, response} = ReqValhalla.optimized_route(locations, costing: "auto")
       iex> is_map(response)
       true
   """
@@ -249,7 +249,7 @@ defmodule ValhallaReqClient do
       ...>   %{lat: 48.8570, lon: 2.3525},
       ...>   %{lat: 48.8698, lon: 2.3467}
       ...> ]
-      iex> {:ok, response} = ValhallaReqClient.trace_route(shape, costing: "auto")
+      iex> {:ok, response} = ReqValhalla.trace_route(shape, costing: "auto")
       iex> is_map(response)
       true
   """
@@ -282,7 +282,7 @@ defmodule ValhallaReqClient do
       ...>   %{lat: 48.8566, lon: 2.3522},
       ...>   %{lat: 48.8698, lon: 2.3467}
       ...> ]
-      iex> {:ok, response} = ValhallaReqClient.trace_attributes(shape, costing: "auto")
+      iex> {:ok, response} = ReqValhalla.trace_attributes(shape, costing: "auto")
       iex> is_map(response)
       true
   """
@@ -312,7 +312,7 @@ defmodule ValhallaReqClient do
   ## Examples
 
       iex> shape = [%{lat: 48.8566, lon: 2.3522}, %{lat: 48.8698, lon: 2.3467}]
-      iex> {:ok, response} = ValhallaReqClient.height(shape)
+      iex> {:ok, response} = ReqValhalla.height(shape)
       iex> is_map(response)
       true
   """
@@ -329,7 +329,7 @@ defmodule ValhallaReqClient do
 
   ## Examples
 
-      iex> {:ok, status} = ValhallaReqClient.status()
+      iex> {:ok, status} = ReqValhalla.status()
       iex> is_map(status)
       true
   """
