@@ -7,10 +7,11 @@ defmodule ReqValhalla do
 
   ## Configuration
 
-  You can configure the base URL for the Valhalla service:
+  You can configure the base URL and default Req options for the Valhalla service:
 
       config :req_valhalla,
-        base_url: "http://your-valhalla-instance.com"
+        base_url: "http://your-valhalla-instance.com",
+        req_options: [receive_timeout: 60_000]
 
   ## Examples
 
@@ -42,15 +43,19 @@ defmodule ReqValhalla do
   ## Parameters
     - `endpoint`: The API endpoint (e.g., "route", "isochrone")
     - `params`: The request parameters as a map
+    - `opts`: Optional keyword list of Req options (e.g., `receive_timeout: 60_000`)
 
   ## Returns
     - `{:ok, response}` on success
     - `{:error, exception}` on failure
   """
-  def post(endpoint, params) do
+  def post(endpoint, params, opts \\ []) do
     url = "#{base_url()}/#{endpoint}"
 
-    case Req.post(url, json: params) do
+    default_req_opts = Application.get_env(:req_valhalla, :req_options, [])
+    req_opts = Keyword.merge(default_req_opts, opts)
+
+    case Req.post(url, Keyword.merge(req_opts, json: params)) do
       {:ok, %Req.Response{status: status, body: body}} when status in 200..299 ->
         {:ok, body}
 
@@ -76,6 +81,7 @@ defmodule ReqValhalla do
     - `:directions_options` - Options for turn-by-turn directions
     - `:exclude_locations` - Locations to exclude from the route
     - `:date_time` - Departure or arrival time information
+    - `:req_options` - Additional Req options (e.g., `[receive_timeout: 60_000]`)
 
   ## Examples
 
@@ -87,6 +93,7 @@ defmodule ReqValhalla do
   def route(locations, opts \\ []) do
     costing = Keyword.get(opts, :costing, "auto")
     units = Keyword.get(opts, :units, "kilometers")
+    req_options = Keyword.get(opts, :req_options, [])
 
     params =
       %{
@@ -100,7 +107,7 @@ defmodule ReqValhalla do
       |> maybe_add(:date_time, Keyword.get(opts, :date_time))
       |> maybe_add(:costing_options, Keyword.get(opts, :costing_options))
 
-    post("route", params)
+    post("route", params, req_options)
   end
 
   @doc """
@@ -119,12 +126,13 @@ defmodule ReqValhalla do
   """
   def locate(locations, opts \\ []) when is_map(locations) or is_list(locations) do
     locations = if is_map(locations), do: [locations], else: locations
+    req_options = Keyword.get(opts, :req_options, [])
 
     params =
       %{locations: locations}
       |> maybe_add(:verbose, Keyword.get(opts, :verbose))
 
-    post("locate", params)
+    post("locate", params, req_options)
   end
 
   @doc """
@@ -140,6 +148,7 @@ defmodule ReqValhalla do
     - `:polygons` - Whether to return polygons (default: true)
     - `:denoise` - Remove small contours (default: 1.0)
     - `:generalize` - Generalize the contours (default: based on meters)
+    - `:req_options` - Additional Req options (e.g., `[receive_timeout: 60_000]`)
 
   ## Examples
 
@@ -155,6 +164,7 @@ defmodule ReqValhalla do
   def isochrone(location, opts \\ []) do
     contours = Keyword.get(opts, :contours, [%{time: 15}])
     costing = Keyword.get(opts, :costing, "auto")
+    req_options = Keyword.get(opts, :req_options, [])
 
     params =
       %{
@@ -167,7 +177,7 @@ defmodule ReqValhalla do
       |> maybe_add(:generalize, Keyword.get(opts, :generalize))
       |> maybe_add(:costing_options, Keyword.get(opts, :costing_options))
 
-    post("isochrone", params)
+    post("isochrone", params, req_options)
   end
 
   @doc """
@@ -177,6 +187,11 @@ defmodule ReqValhalla do
     - `sources`: List of source location maps
     - `targets`: List of target location maps
     - `opts`: Options including `:costing`, `:units`, etc.
+
+  ## Options
+    - `:costing` - The costing model (default: "auto")
+    - `:units` - Distance units (default: "kilometers")
+    - `:req_options` - Additional Req options (e.g., `[receive_timeout: 60_000]`)
 
   ## Examples
 
@@ -189,6 +204,7 @@ defmodule ReqValhalla do
   def matrix(sources, targets, opts \\ []) do
     costing = Keyword.get(opts, :costing, "auto")
     units = Keyword.get(opts, :units, "kilometers")
+    req_options = Keyword.get(opts, :req_options, [])
 
     params =
       %{
@@ -199,7 +215,7 @@ defmodule ReqValhalla do
       }
       |> maybe_add(:costing_options, Keyword.get(opts, :costing_options))
 
-    post("sources_to_targets", params)
+    post("sources_to_targets", params, req_options)
   end
 
   @doc """
@@ -223,6 +239,7 @@ defmodule ReqValhalla do
   def optimized_route(locations, opts \\ []) do
     costing = Keyword.get(opts, :costing, "auto")
     units = Keyword.get(opts, :units, "kilometers")
+    req_options = Keyword.get(opts, :req_options, [])
 
     params =
       %{
@@ -232,7 +249,7 @@ defmodule ReqValhalla do
       }
       |> maybe_add(:costing_options, Keyword.get(opts, :costing_options))
 
-    post("optimized_route", params)
+    post("optimized_route", params, req_options)
   end
 
   @doc """
@@ -256,6 +273,7 @@ defmodule ReqValhalla do
   def trace_route(shape, opts \\ []) do
     costing = Keyword.get(opts, :costing, "auto")
     shape_match = Keyword.get(opts, :shape_match, "map_snap")
+    req_options = Keyword.get(opts, :req_options, [])
 
     params =
       %{
@@ -266,7 +284,7 @@ defmodule ReqValhalla do
       |> maybe_add(:costing_options, Keyword.get(opts, :costing_options))
       |> maybe_add(:begin_time, Keyword.get(opts, :begin_time))
 
-    post("trace_route", params)
+    post("trace_route", params, req_options)
   end
 
   @doc """
@@ -289,6 +307,7 @@ defmodule ReqValhalla do
   def trace_attributes(shape, opts \\ []) do
     costing = Keyword.get(opts, :costing, "auto")
     shape_match = Keyword.get(opts, :shape_match, "map_snap")
+    req_options = Keyword.get(opts, :req_options, [])
 
     params =
       %{
@@ -299,7 +318,7 @@ defmodule ReqValhalla do
       |> maybe_add(:costing_options, Keyword.get(opts, :costing_options))
       |> maybe_add(:filters, Keyword.get(opts, :filters))
 
-    post("trace_attributes", params)
+    post("trace_attributes", params, req_options)
   end
 
   @doc """
@@ -317,11 +336,13 @@ defmodule ReqValhalla do
       true
   """
   def height(shape, opts \\ []) do
+    req_options = Keyword.get(opts, :req_options, [])
+
     params =
       %{shape: shape}
       |> maybe_add(:range, Keyword.get(opts, :range))
 
-    post("height", params)
+    post("height", params, req_options)
   end
 
   @doc """
@@ -335,8 +356,9 @@ defmodule ReqValhalla do
   """
   def status do
     url = "#{base_url()}/status"
+    default_req_opts = Application.get_env(:req_valhalla, :req_options, [])
 
-    case Req.get(url) do
+    case Req.get(url, default_req_opts) do
       {:ok, %Req.Response{status: status, body: body}} when status in 200..299 ->
         {:ok, body}
 
